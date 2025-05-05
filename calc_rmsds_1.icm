@@ -1,0 +1,49 @@
+#!/usr/bin/icm 
+call _startup 
+
+maxFileSizeMb=2500 
+openFile "out_fgf1r_vina_1.sdf" 
+openFile "out_fgf1r_pl_1.sdf" 
+openFile "out_fgf1r_rd_1.sdf" 
+openFile "out_fgf1r_dock6_1.sdf" 
+openFile "out_fgf1r_icm_1.sdf" 
+rmsd_icm_vina=Rarray(285752,0.) 
+rmsd_icm_pl=Rarray(285752,0.) 
+rmsd_icm_rd=Rarray(285752,0.) 
+rmsd_icm_dock=Rarray(285752,0.) 
+rmsd_dock_vina=Rarray(285752,0.) 
+rmsd_dock_pl=Rarray(285752,0.) 
+rmsd_dock_rd=Rarray(285752,0.) 
+rmsd_pl_vina=Rarray(285752,0.) 
+rmsd_pl_rd=Rarray(285752,0.) 
+rmsd_rd_vina=Rarray(285752,0.) 
+for i=1,285752 
+read mol out_fgf1r_vina_1.mol[$i] 
+read mol out_fgf1r_pl_1.mol[$i] 
+read mol out_fgf1r_rd_1.mol[$i] 
+read mol out_fgf1r_dock6_1.mol[$i] 
+read mol out_fgf1r_icm_1.mol[$i] 
+rmsd_icm_vina[$i]=Srmsd(a_5.//!h* a_1.//!h* chemical) 
+rmsd_icm_pl[$i]=Srmsd(a_5.//!h* a_2.//!h* chemical) 
+rmsd_icm_rd[$i]=Srmsd(a_5.//!h* a_3.//!h* chemical) 
+rmsd_icm_dock[$i]=Srmsd(a_5.//!h* a_4.//!h* chemical) 
+rmsd_dock_vina[$i]=Srmsd(a_4.//!h* a_1.//!h* chemical) 
+rmsd_dock_pl[$i]=Srmsd(a_4.//!h* a_2.//!h* chemical) 
+rmsd_dock_rd[$i]=Srmsd(a_4.//!h* a_3.//!h* chemical) 
+rmsd_pl_vina[$i]=Srmsd(a_2.//!h* a_1.//!h* chemical) 
+rmsd_pl_rd[$i]=Srmsd(a_2.//!h* a_3.//!h* chemical) 
+rmsd_rd_vina[$i]=Srmsd(a_3.//!h* a_1.//!h* chemical) 
+delete a_1,2,3,4,5. 
+endfor 
+add column out_fgf1r_rd_1 rmsd_icm_vina name="RMSD_ICM_VINA" append 
+add column out_fgf1r_rd_1 rmsd_icm_rd name="RMSD_ICM_RDOCK" append 
+add column out_fgf1r_rd_1 rmsd_icm_pl name="RMSD_PL_ICM" append 
+add column out_fgf1r_rd_1 rmsd_icm_dock name="RMSD_DOCK_ICM" append 
+add column out_fgf1r_rd_1 rmsd_dock_vina name="RMSD_DOCK_VINA" append 
+add column out_fgf1r_rd_1 rmsd_dock_rd name="RMSD_DOCK_RDOCK" append 
+add column out_fgf1r_rd_1 rmsd_dock_pl name="RMSD_DOCK_PL" append 
+add column out_fgf1r_rd_1 rmsd_pl_vina name="RMSD_PL_VINA" append 
+add column out_fgf1r_rd_1 rmsd_pl_rd name="RMSD_PL_RDOCK" append 
+add column out_fgf1r_rd_1 rmsd_rd_vina name="RMSD_VINA_RDOCK" append 
+
+write table mol compress out_fgf1r_rd_1 "out_fgf1r_rd_1.sdf" 
